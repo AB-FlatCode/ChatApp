@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import Page from "./Page"
 import Axios from "axios"
 import { withRouter } from "react-router-dom"
+import DispatchContext from "../DispatchContext"
 
 function CreatePost(props) {
   const [title, setTitle] = useState()
   const [body, setBody] = useState()
+  const appDispatch = useContext(DispatchContext)
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -18,7 +20,7 @@ function CreatePost(props) {
       })
       // Redirect to view post
       props.history.push(`/post/${response.data}`)
-      props.addFlashMessage("Post created successfuly!")
+      appDispatch({ type: "flashMessage", value: "Post created!" })
       console.log("Post Created")
     } catch (e) {
       console.log("error occured")
