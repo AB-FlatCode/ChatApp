@@ -17,17 +17,28 @@ function Profile() {
   })
 
   useEffect(() => {
+    const ourRequest = Axios.CancelToken.source() // clean up when component unmounted
+
     async function fetchData() {
       try {
-        const response = await Axios.post(`/profile/${username}`, {
-          token: appState.user.token,
-        })
+        const response = await Axios.post(
+          `/profile/${username}`,
+          {
+            token: appState.user.token,
+          },
+          { cancelToken: ourRequest.token }
+        )
         setProfileData(response.data)
       } catch (e) {
         console.log("error")
       }
     }
     fetchData()
+
+    return () => {
+      // clean up when component unmounted
+      ourRequest.cancel()
+    }
   }, []) //run function once when component renders
   return (
     <Page title="Profile Screen">
